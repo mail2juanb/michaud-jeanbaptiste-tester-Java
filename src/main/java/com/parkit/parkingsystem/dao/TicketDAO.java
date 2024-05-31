@@ -86,4 +86,23 @@ public class TicketDAO {
         }
         return false;
     }
+
+    public Integer getNbTicket(Ticket ticket) {
+        Connection con = null;
+        int count = 0;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_FREQ);
+            ps.setString(1, ticket.getVehicleRegNumber());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                count++;
+            }
+        } catch (Exception ex) {
+            logger.error("Error count number of ticket, can't define user frequency", ex);
+        } finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return count;
+    }
 }
