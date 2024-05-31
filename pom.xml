@@ -137,6 +137,9 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>com/parkit/parkingsystem/constants/*</excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
