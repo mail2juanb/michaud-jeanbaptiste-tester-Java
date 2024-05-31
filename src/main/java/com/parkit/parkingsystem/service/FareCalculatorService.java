@@ -13,8 +13,11 @@ public class FareCalculatorService {
         long inHour = ticket.getInTime().getTime();
         long outHour = ticket.getOutTime().getTime();
 
-
         double duration = (outHour - inHour)/(1000.*3600);
+
+        if (duration < 0.5) {
+            duration = 0.;
+        }
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
