@@ -10,34 +10,61 @@ public class FareCalculatorService {
     }
 
     public void calculateFare(Ticket ticket, boolean discount){
-        if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
+        if(outTimeIncoherence(ticket)) {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
-        long inHour = ticket.getInTime().getTime();
-        long outHour = ticket.getOutTime().getTime();
+        double price = calculatePrice(ticket, discount);
 
+        ticket.setPrice(price);
+    }
 
-        double duration = (outHour - inHour)/(1000.*3600);
+    private static boolean outTimeIncoherence(Ticket ticket) {
+        return (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()));
+    }
 
-        if (duration < 0.5) {
-            duration = 0.;
+    /**
+     * Calculate parking fare depending on duration, type of vehicle and discount.
+     * @param ticket parking ticket including in/out time, vehicle RegNumber and parking spot
+     * @param discount 5% discount for regular users
+     * @return parking fare price in double
+     */
+    private static double calculatePrice(Ticket ticket, boolean discount) {
+        double duration = parkingTime(ticket);
+        double price = 0;
+
+        if(isEligibleToFree(duration)) {
+            return price;
         }
 
-        switch (ticket.getParkingSpot().getParkingType()){
+        switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
-                ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+                price = duration * Fare.CAR_RATE_PER_HOUR;
                 break;
             }
             case BIKE: {
-                ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+                price = duration * Fare.BIKE_RATE_PER_HOUR;
                 break;
             }
-            default: throw new IllegalArgumentException("Unkown Parking Type");
+            default:
+                throw new IllegalArgumentException("Unkown Parking Type");
         }
 
-        if (discount) {
-            ticket.setPrice(ticket.getPrice() - ( 0.05 * ticket.getPrice() ));
+        if(discount) {
+            price = price - (0.05 * price);
         }
+
+        return price;
+    }
+
+    private static double parkingTime(Ticket ticket) {
+        long inHour = ticket.getInTime().getTime();
+        long outHour = ticket.getOutTime().getTime();
+
+        return (outHour - inHour) / (1000.*3600);
+    }
+
+    private static boolean isEligibleToFree(double duration) {
+        return duration < 0.5;
     }
 }
