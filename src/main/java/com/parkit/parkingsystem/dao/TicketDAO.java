@@ -95,8 +95,8 @@ public class TicketDAO {
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_FREQ);
             ps.setString(1, ticket.getVehicleRegNumber());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                count++;
+            if(rs.next()) {
+                count = rs.getInt("FREQ");
             }
         } catch (Exception ex) {
             logger.error("Error count number of ticket, can't define user frequency", ex);
