@@ -49,13 +49,17 @@ public class ParkingService {
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
 
-                if(ticketDAO.getNbTicket(ticket) > 0) {
+                if (isEligibleToDiscount(ticket)) {
                     System.out.println("Heureux de vous revoir ! En tant qu’utilisateur régulier de notre parking, vous allez obtenir une remise de 5%");
                 }
             }
         }catch(Exception e){
             logger.error("Unable to process incoming vehicle",e);
         }
+    }
+
+    public boolean isEligibleToDiscount(Ticket ticket) {
+        return ticketDAO.getNbTicket(ticket) > 0;
     }
 
     private String getVehichleRegNumber() throws Exception {
@@ -108,8 +112,8 @@ public class ParkingService {
             Date outTime = new Date();
             ticket.setOutTime(outTime);
 
-            if(ticketDAO.getNbTicket(ticket) > 0) {
-                Boolean discount = true;
+            if (isEligibleToDiscount(ticket)) {
+                boolean discount = true;
                 fareCalculatorService.calculateFare(ticket, discount);
             } else {
                 fareCalculatorService.calculateFare(ticket);
