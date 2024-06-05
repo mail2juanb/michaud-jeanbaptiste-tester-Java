@@ -8,13 +8,18 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 
@@ -22,6 +27,8 @@ import static org.mockito.Mockito.*;
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
+
+    private Ticket ticket;
 
     @Mock
     private static InputReaderUtil inputReaderUtil;
@@ -31,19 +38,14 @@ public class ParkingServiceTest {
     private static TicketDAO ticketDAO;
 
     @BeforeEach
-    private void setUpPerTest() {
+    public void setUpPerTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
-            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-            Ticket ticket = new Ticket();
+            ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
-            ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
@@ -52,10 +54,71 @@ public class ParkingServiceTest {
         }
     }
 
-    @Test
-    public void processExitingVehicleTest(){
+    @ParameterizedTest
+    @EnumSource(ParkingType.class)
+    @Disabled("Test method can be removed if processExitingVehicle is correct")
+    public void processExitingVehicleWithoutDiscount(ParkingType parkingType){
+        // GIVEN an unknown vehicle parked
+        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
+        ticket.setParkingSpot(parkingSpot);
+        doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
+        doReturn(0).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
+
+        // WHEN the unknown vehicle exit
         parkingService.processExitingVehicle();
+
+        // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
     }
 
+    @ParameterizedTest
+    @EnumSource(ParkingType.class)
+    @Disabled("Test method can be removed if processExitingVehicle is correct")
+    public void processExitingVehicleWithDiscount(ParkingType parkingType){
+        // GIVEN a known vehicle parked
+        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
+        ticket.setParkingSpot(parkingSpot);
+        doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
+        doReturn(1).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
+
+        // WHEN the known vehicle exit
+        parkingService.processExitingVehicle();
+
+        // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+    }
+
+    private static Stream<Arguments> provideArgForDiscount() {
+        return Stream.of(
+                Arguments.of(0, ParkingType.CAR, "Without Discount"),
+                Arguments.of(1, ParkingType.CAR, "With Discount"),
+                Arguments.of(0, ParkingType.BIKE, "Without Discount"),
+                Arguments.of(1, ParkingType.BIKE, "With Discount")
+        );
+    }
+
+    @ParameterizedTest(name = "{index} => Vehicle {1} => {2}")
+    @MethodSource("provideArgForDiscount")
+    public void processExitingVehicle(int value, ParkingType parkingType, String argName){
+        // GIVEN a vehicle parked
+        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
+        ticket.setParkingSpot(parkingSpot);
+        doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
+        doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
+
+        // WHEN vehicle exiting
+        parkingService.processExitingVehicle();
+
+        // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+    }
 }
