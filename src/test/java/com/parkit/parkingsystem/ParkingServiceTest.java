@@ -18,17 +18,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
-
     private Ticket ticket;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @Mock
     private static InputReaderUtil inputReaderUtil;
@@ -140,9 +143,28 @@ public class ParkingServiceTest {
         // WHEN vehicle incoming
         parkingService.processIncomingVehicle();
 
-        // THEN verify that methods updateParkingSpot, saveTicket and getNbTicket called one time
+        // THEN check that methods updateParkingSpot, saveTicket and getNbTicket called one time
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
         verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
         verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ParkingType.class)
+    public void processExitingVehicleUnableUpdate(ParkingType parkingType) {
+        // GIVEN a vehicle parked but update ticket fail
+        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
+        ticket.setParkingSpot(parkingSpot);
+
+        doReturn(ticket).when(ticketDAO).getTicket(anyString());
+        doReturn(false).when(ticketDAO).updateTicket(any(Ticket.class));
+        System.setOut(new PrintStream(outContent));
+
+        // WHEN vehicle exiting
+        parkingService.processExitingVehicle();
+
+        // THEN check that the error message is as expected
+        String expectedOutput = "Unable to update ticket information. Error occurred";
+        assertTrue(outContent.toString().contains(expectedOutput));
     }
 }
