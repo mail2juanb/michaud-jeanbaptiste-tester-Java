@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.stream.Stream;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -200,5 +201,20 @@ public class ParkingServiceTest {
         assertEquals(1, resultParkingSpot.getId());
         assertEquals(ParkingType.CAR, resultParkingSpot.getParkingType());
         assertTrue(resultParkingSpot.isAvailable());
+    }
+
+    @Test
+    public void getNextParkingNumberIfAvailableParkingNumberNotFound() {
+        // GIVEN a vehicle type selection for CAR
+        doReturn(1).when(inputReaderUtil).readSelection();
+
+        // AND no available spot
+        doReturn(0).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));  // Simulate no available spots
+
+        // WHEN try to find the next available parking place
+        ParkingSpot resultParkingSpot = parkingService.getNextParkingNumberIfAvailable();
+
+        // THEN result should be null
+        assertNull(resultParkingSpot);
     }
 }
