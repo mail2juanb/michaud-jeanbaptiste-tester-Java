@@ -45,7 +45,6 @@ public class ParkingServiceTest {
             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
             ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
@@ -61,6 +60,7 @@ public class ParkingServiceTest {
         // GIVEN an unknown vehicle parked
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
+        doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
         doReturn(0).when(ticketDAO).getNbTicket(any(Ticket.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
@@ -81,6 +81,7 @@ public class ParkingServiceTest {
         // GIVEN a known vehicle parked
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
+        doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
         doReturn(1).when(ticketDAO).getNbTicket(any(Ticket.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
@@ -109,6 +110,8 @@ public class ParkingServiceTest {
         // GIVEN a vehicle parked
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
+
+        doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
         doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
@@ -119,6 +122,27 @@ public class ParkingServiceTest {
         // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
         verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+    }
+
+    @ParameterizedTest(name = "{index} => Vehicle {1} => {2}")
+    @MethodSource("provideArgForDiscount")
+    public void processIncomingVehicle(int value, ParkingType parkingType, String argName) {
+        // GIVEN a vehicle unknown incoming
+        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
+        doReturn((parkingType == ParkingType.CAR) ? 1 : (parkingType == ParkingType.BIKE) ? 2 : 0).when(inputReaderUtil).readSelection();
+        doReturn(1).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));
+
+        ticket.setParkingSpot(parkingSpot);
+        doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
+
+        // WHEN vehicle incoming
+        parkingService.processIncomingVehicle();
+
+        // THEN verify that methods updateParkingSpot, saveTicket and getNbTicket called one time
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
         verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
     }
 }
