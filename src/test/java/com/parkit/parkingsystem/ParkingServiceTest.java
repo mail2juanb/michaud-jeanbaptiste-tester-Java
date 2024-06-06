@@ -217,4 +217,16 @@ public class ParkingServiceTest {
         // THEN result should be null
         assertNull(resultParkingSpot);
     }
+
+    @Test
+    public void getNextParkingNumberIfAvailableParkingNumberWrongArgument() {
+        // GIVEN an invalid vehicle type selection
+        doReturn(3).when(inputReaderUtil).readSelection();
+
+        // WHEN finding the next available parking place
+        ParkingSpot resultParkingSpot = parkingService.getNextParkingNumberIfAvailable();
+
+        // THEN the result should be null
+        assertNull(resultParkingSpot);
+    }
 }
