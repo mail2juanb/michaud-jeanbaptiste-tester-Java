@@ -9,6 +9,7 @@ import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,6 +24,7 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.stream.Stream;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -42,18 +44,10 @@ public class ParkingServiceTest {
 
     @BeforeEach
     public void setUpPerTest() {
-        try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-
             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
             ticket.setVehicleRegNumber("ABCDEF");
-
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("Failed to set up test mock objects");
-        }
     }
 
     @ParameterizedTest
@@ -61,6 +55,11 @@ public class ParkingServiceTest {
     @Disabled("Test method can be removed if processExitingVehicle is correct")
     public void processExitingVehicleWithoutDiscount(ParkingType parkingType){
         // GIVEN an unknown vehicle parked
+        try {
+            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
@@ -82,6 +81,11 @@ public class ParkingServiceTest {
     @Disabled("Test method can be removed if processExitingVehicle is correct")
     public void processExitingVehicleWithDiscount(ParkingType parkingType){
         // GIVEN a known vehicle parked
+        try {
+            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
@@ -111,9 +115,13 @@ public class ParkingServiceTest {
     @MethodSource("provideArgForDiscount")
     public void processExitingVehicle(int value, ParkingType parkingType, String argName){
         // GIVEN a vehicle parked
+        try {
+            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
-
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
         doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
@@ -132,10 +140,14 @@ public class ParkingServiceTest {
     @MethodSource("provideArgForDiscount")
     public void processIncomingVehicle(int value, ParkingType parkingType, String argName) {
         // GIVEN a vehicle unknown incoming
+        try {
+            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         doReturn((parkingType == ParkingType.CAR) ? 1 : (parkingType == ParkingType.BIKE) ? 2 : 0).when(inputReaderUtil).readSelection();
         doReturn(1).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));
-
         ticket.setParkingSpot(parkingSpot);
         doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
@@ -153,9 +165,13 @@ public class ParkingServiceTest {
     @EnumSource(ParkingType.class)
     public void processExitingVehicleUnableUpdate(ParkingType parkingType) {
         // GIVEN a vehicle parked but update ticket fail
+        try {
+            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
-
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(false).when(ticketDAO).updateTicket(any(Ticket.class));
         System.setOut(new PrintStream(outContent));
@@ -166,5 +182,23 @@ public class ParkingServiceTest {
         // THEN check that the error message is as expected
         String expectedOutput = "Unable to update ticket information. Error occurred";
         assertTrue(outContent.toString().contains(expectedOutput));
+    }
+
+    @Test
+    public void getNextParkingNumberIfAvailable()  {
+        // GIVEN a car want an available place in car's park
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setPrice(0);
+        doReturn(1).when(inputReaderUtil).readSelection();
+        doReturn(1).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));
+
+        // WHEN finding next available parking place
+        ParkingSpot resultParkingSpot = parkingService.getNextParkingNumberIfAvailable();
+
+        // THEN find an available spot with ID 1
+        assertEquals(1, resultParkingSpot.getId());
+        assertEquals(ParkingType.CAR, resultParkingSpot.getParkingType());
+        assertTrue(resultParkingSpot.isAvailable());
     }
 }
