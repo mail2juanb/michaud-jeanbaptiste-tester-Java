@@ -1,6 +1,5 @@
 package com.parkit.parkingsystem;
 
-import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
@@ -80,22 +79,22 @@ public class FareCalculatorServiceTest {
 
     private static Stream<Arguments> provideArgForAnyDurationAnyDiscountAnyVehicle() {
         return Stream.of(
-                Arguments.of(1, false, ParkingType.CAR), // 1hour / !Discount / CAR
-                Arguments.of(1, false, ParkingType.BIKE), // 1hour / !Discount / BIKE
-                Arguments.of(1, true, ParkingType.CAR), // 1hour / Discount / CAR
-                Arguments.of(1, true, ParkingType.BIKE), // 1hour / Discount / BIKE
-                Arguments.of(0.75, false, ParkingType.CAR), // 45mn / !Discount / CAR
-                Arguments.of(0.75, false, ParkingType.BIKE), // 45mn / !Discount / BIKE
-                Arguments.of(0.45, false, ParkingType.CAR), // 27mn / !Discount / CAR
-                Arguments.of(0.45, false, ParkingType.BIKE), // 27mn / !Discount / BIKE
-                Arguments.of(24, false, ParkingType.CAR), // 24hours / !Discount / CAR
-                Arguments.of(24, false, ParkingType.BIKE) // 24hours / !Discount / BIKE
+                Arguments.of(1, false, ParkingType.CAR, 1.5), // 1hour / !Discount / CAR / Fare=1.5
+                Arguments.of(1, false, ParkingType.BIKE, 1.), // 1hour / !Discount / BIKE / Fare=1
+                Arguments.of(1, true, ParkingType.CAR, 1.425), // 1hour / Discount / CAR / Fare=1.425
+                Arguments.of(1, true, ParkingType.BIKE, 0.95), // 1hour / Discount / BIKE / Fare=0.95
+                Arguments.of(0.75, false, ParkingType.CAR, 1.125), // 45mn / !Discount / CAR / Fare=1.125
+                Arguments.of(0.75, false, ParkingType.BIKE, 0.75), // 45mn / !Discount / BIKE / Fare=0.75
+                Arguments.of(0.45, false, ParkingType.CAR, 0.), // 27mn (Free) / !Discount / CAR / Fare=0.
+                Arguments.of(0.45, false, ParkingType.BIKE, 0.), // 27mn (Free) / !Discount / BIKE / Fare=0.
+                Arguments.of(24, false, ParkingType.CAR, 36.), // 24hours / !Discount / CAR / Fare=36
+                Arguments.of(24, false, ParkingType.BIKE, 24.) // 24hours / !Discount / BIKE / Fare=24
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideArgForAnyDurationAnyDiscountAnyVehicle")
-    public void calculateFareAny(double durationInHour, boolean discount, ParkingType parkingType) {
+    public void calculateFareAny(double durationInHour, boolean discount, ParkingType parkingType, double expectedPrice) {
         // GIVEN a vehicle parked
         Date inTime = new Date();
         inTime.setTime((long) (System.currentTimeMillis() - (durationInHour * 3600 * 1000)));
@@ -106,41 +105,11 @@ public class FareCalculatorServiceTest {
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
 
-        double farePerHour = vehicleRatePerHour(parkingType);
-
-        // >30mn = Free
-        double originalPrice = durationInHour * farePerHour;
-        if (durationInHour < 0.5) {
-            originalPrice = 0;
-        }
-
-        // Known Vehicle = 5%Off
-        double discountPrice = 0;
-        if (discount) {
-            discountPrice = 0.05 * originalPrice;
-        }
-        final double expectedPrice = originalPrice - discountPrice;
-
         // WHEN vehicle exit
         fareCalculatorService.calculateFare(ticket, discount);
 
         // THEN Fare depend on values entered
         assertEquals(expectedPrice, ticket.getPrice());
-    }
-
-    private static double vehicleRatePerHour(ParkingType parkingType) {
-        double farePerHour;
-        switch (parkingType.name()) {
-            case "CAR":
-                farePerHour = Fare.CAR_RATE_PER_HOUR;
-                break;
-            case "BIKE":
-                farePerHour = Fare.BIKE_RATE_PER_HOUR;
-                break;
-            default:
-                throw new IllegalStateException("Unexpected parkingType value: " + parkingType.name());
-        }
-        return farePerHour;
     }
 
 }
