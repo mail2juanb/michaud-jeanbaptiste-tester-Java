@@ -81,9 +81,9 @@ public class FareCalculatorServiceTest {
         return Stream.of(
                 Arguments.of(1, false, ParkingType.CAR, 1.5), // 1hour / !Discount / CAR / Fare=1.5
                 Arguments.of(1, false, ParkingType.BIKE, 1.), // 1hour / !Discount / BIKE / Fare=1
-                Arguments.of(1, true, ParkingType.CAR, 1.425), // 1hour / Discount / CAR / Fare=1.425
+                Arguments.of(1, true, ParkingType.CAR, 1.42), // 1hour / Discount / CAR / Fare=1.425
                 Arguments.of(1, true, ParkingType.BIKE, 0.95), // 1hour / Discount / BIKE / Fare=0.95
-                Arguments.of(0.75, false, ParkingType.CAR, 1.125), // 45mn / !Discount / CAR / Fare=1.125
+                Arguments.of(0.75, false, ParkingType.CAR, 1.12), // 45mn / !Discount / CAR / Fare=1.125
                 Arguments.of(0.75, false, ParkingType.BIKE, 0.75), // 45mn / !Discount / BIKE / Fare=0.75
                 Arguments.of(0.45, false, ParkingType.CAR, 0.), // 27mn (Free) / !Discount / CAR / Fare=0.
                 Arguments.of(0.45, false, ParkingType.BIKE, 0.), // 27mn (Free) / !Discount / BIKE / Fare=0.

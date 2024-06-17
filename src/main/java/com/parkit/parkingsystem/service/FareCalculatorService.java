@@ -54,7 +54,7 @@ public class FareCalculatorService {
             price = price - (0.05 * price);
         }
 
-        return price;
+        return FareCalculatorService.truncatePrice(price);
     }
 
     private static double parkingTime(Ticket ticket) {
@@ -66,5 +66,9 @@ public class FareCalculatorService {
 
     private static boolean isEligibleToFree(double duration) {
         return duration < 0.5;
+    }
+
+    public static double truncatePrice(double price){
+        return Math.floor(price * 100) / 100;
     }
 }
