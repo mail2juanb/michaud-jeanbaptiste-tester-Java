@@ -35,6 +35,8 @@ public class ParkingServiceTest {
     private Ticket ticket;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
+    public static final String VEHICLE_REG_NUMBER = "ABCDEF";
+
     @Mock
     private static InputReaderUtil inputReaderUtil;
     @Mock
@@ -46,7 +48,7 @@ public class ParkingServiceTest {
     public void setUpPerTest() {
             ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
-            ticket.setVehicleRegNumber("ABCDEF");
+            ticket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
     }
 
@@ -64,7 +66,7 @@ public class ParkingServiceTest {
     public void processExitingVehicle(int value, ParkingType parkingType){
         // GIVEN a vehicle parked
         try {
-            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -89,7 +91,7 @@ public class ParkingServiceTest {
     public void processIncomingVehicle(int value, ParkingType parkingType) {
         // GIVEN a vehicle unknown incoming
         try {
-            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -114,7 +116,7 @@ public class ParkingServiceTest {
     public void processExitingVehicleUnableUpdate(ParkingType parkingType) {
         // GIVEN a vehicle parked but update ticket fail
         try {
-            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
+            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
