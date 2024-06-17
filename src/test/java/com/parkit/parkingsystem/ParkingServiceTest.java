@@ -105,16 +105,16 @@ public class ParkingServiceTest {
 
     private static Stream<Arguments> provideArgForDiscount() {
         return Stream.of(
-                Arguments.of(0, ParkingType.CAR, "Without Discount"),
-                Arguments.of(1, ParkingType.CAR, "With Discount"),
-                Arguments.of(0, ParkingType.BIKE, "Without Discount"),
-                Arguments.of(1, ParkingType.BIKE, "With Discount")
+                Arguments.of(0, ParkingType.CAR),               // Car - Without Discount
+                Arguments.of(1, ParkingType.CAR),               // Car - With Discount
+                Arguments.of(0, ParkingType.BIKE),              // Bike - Without Discount
+                Arguments.of(1, ParkingType.BIKE)               // Bike - With Discount
         );
     }
 
-    @ParameterizedTest(name = "{index} => Vehicle {1} => {2}")
+    @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("provideArgForDiscount")
-    public void processExitingVehicle(int value, ParkingType parkingType, String argName){
+    public void processExitingVehicle(int value, ParkingType parkingType){
         // GIVEN a vehicle parked
         try {
             doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
@@ -137,9 +137,9 @@ public class ParkingServiceTest {
         verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
     }
 
-    @ParameterizedTest(name = "{index} => Vehicle {1} => {2}")
+    @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("provideArgForDiscount")
-    public void processIncomingVehicle(int value, ParkingType parkingType, String argName) {
+    public void processIncomingVehicle(int value, ParkingType parkingType) {
         // GIVEN a vehicle unknown incoming
         try {
             doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
