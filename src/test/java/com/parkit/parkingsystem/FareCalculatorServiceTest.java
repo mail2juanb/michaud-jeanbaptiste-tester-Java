@@ -55,8 +55,15 @@ public class FareCalculatorServiceTest {
         assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
+    private static Stream<Arguments> provideArgForAnyVehicle() {
+        return Stream.of(
+                Arguments.of(ParkingType.CAR),
+                Arguments.of(ParkingType.BIKE)
+        );
+    }
+
     @ParameterizedTest
-    @EnumSource(ParkingType.class)
+    @MethodSource("provideArgForAnyVehicle")
     public void calculateFareAnyVehicleWithFutureInTime(ParkingType parkingType){
         // GIVEN a vehicle with a future entry date
         double parkingTimeInHour = 1.;
