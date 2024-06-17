@@ -8,7 +8,6 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,58 +48,6 @@ public class ParkingServiceTest {
             ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
             ticket.setVehicleRegNumber("ABCDEF");
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-    }
-
-    @ParameterizedTest
-    @EnumSource(ParkingType.class)
-    @Disabled("Test method can be removed if processExitingVehicle is correct")
-    public void processExitingVehicleWithoutDiscount(ParkingType parkingType){
-        // GIVEN an unknown vehicle parked
-        try {
-            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
-        ticket.setParkingSpot(parkingSpot);
-        doReturn(ticket).when(ticketDAO).getTicket(anyString());
-        doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
-        doReturn(0).when(ticketDAO).getNbTicket(any(Ticket.class));
-        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
-
-        // WHEN the unknown vehicle exit
-        parkingService.processExitingVehicle();
-
-        // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
-        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
-    }
-
-    @ParameterizedTest
-    @EnumSource(ParkingType.class)
-    @Disabled("Test method can be removed if processExitingVehicle is correct")
-    public void processExitingVehicleWithDiscount(ParkingType parkingType){
-        // GIVEN a known vehicle parked
-        try {
-            doReturn("ABCDEF").when(inputReaderUtil).readVehicleRegistrationNumber();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
-        ticket.setParkingSpot(parkingSpot);
-        doReturn(ticket).when(ticketDAO).getTicket(anyString());
-        doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
-        doReturn(1).when(ticketDAO).getNbTicket(any(Ticket.class));
-        doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
-
-        // WHEN the known vehicle exit
-        parkingService.processExitingVehicle();
-
-        // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-        verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
-        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
     }
 
     private static Stream<Arguments> provideArgForDiscount() {
