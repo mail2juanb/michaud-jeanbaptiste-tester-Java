@@ -63,13 +63,9 @@ public class ParkingServiceTest {
 
     @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("provideArgForDiscount")
-    public void processExitingVehicle(int value, ParkingType parkingType){
+    public void processExitingVehicle(int value, ParkingType parkingType) throws Exception {
         // GIVEN a vehicle parked
-        try {
-            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
@@ -88,13 +84,9 @@ public class ParkingServiceTest {
 
     @ParameterizedTest(name = "{index} => {1}")
     @MethodSource("provideArgForDiscount")
-    public void processIncomingVehicle(int value, ParkingType parkingType) {
+    public void processIncomingVehicle(int value, ParkingType parkingType) throws Exception {
         // GIVEN a vehicle unknown incoming
-        try {
-            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         doReturn((parkingType == ParkingType.CAR) ? 1 : (parkingType == ParkingType.BIKE) ? 2 : 0).when(inputReaderUtil).readSelection();
         doReturn(1).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));
@@ -135,7 +127,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void getNextParkingNumberIfAvailable()  {
+    public void getNextParkingNumberIfAvailable()  throws Exception {
         // GIVEN a car want an available place in car's park
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
         ticket.setParkingSpot(parkingSpot);
