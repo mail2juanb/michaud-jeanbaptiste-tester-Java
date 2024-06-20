@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Date;
@@ -52,15 +53,8 @@ public class FareCalculatorServiceTest {
         assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
-    private static Stream<Arguments> provideArgForAnyVehicle() {
-        return Stream.of(
-                Arguments.of(ParkingType.CAR),
-                Arguments.of(ParkingType.BIKE)
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("provideArgForAnyVehicle")
+    @EnumSource(ParkingType.class)
     public void calculateFareAnyVehicleWithFutureInTime(ParkingType parkingType){
         // GIVEN a vehicle with a future entry date
         double parkingTimeInHour = 1.;
