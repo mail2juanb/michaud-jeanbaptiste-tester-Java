@@ -87,13 +87,20 @@ public class TicketDAO {
         return false;
     }
 
+
+    @Deprecated
     public Integer getNbTicket(Ticket ticket) {
+        return getNbTicket(ticket.getVehicleRegNumber());
+    }
+
+    public Integer getNbTicket(String vehicleRegNumber) {
+
         Connection con = null;
         int count = 0;
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_FREQ);
-            ps.setString(1, ticket.getVehicleRegNumber());
+            ps.setString(1, vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
                 count = rs.getInt("FREQ");
