@@ -6,6 +6,8 @@ import com.parkit.parkingsystem.model.Ticket;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertSame;
 
@@ -63,10 +65,27 @@ public class TicketTest {
         double expectedPrice = 15.75;
         Ticket ticket = new Ticket();
         ticket.setPrice(expectedPrice);
+
         //WHEN retrieve Price
         double currentPrice = ticket.getPrice();
+
         //THEN return the expected Price
         assertEquals(expectedPrice, currentPrice, 0);
+    }
+
+    @Test
+    @DisplayName("InTime is correctly defined and retrieved.")
+    public void getInTimeTest() {
+        //GIVEN an InTime
+        Date expectedInTime = new Date();
+        Ticket ticket = new Ticket();
+        ticket.setInTime(expectedInTime);
+
+        //WHEN retrieve the InTime
+        Date currentInTime = ticket.getInTime();
+
+        //THEN return the expected InTime
+        assertEquals(expectedInTime, currentInTime);
     }
 
 }
