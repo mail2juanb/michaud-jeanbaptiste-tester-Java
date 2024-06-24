@@ -40,8 +40,10 @@ public class ParkingSpotTest {
     public void isAvailableParkingSpotTest() {
         //GIVEN a ParkingSpot with Id=1 available
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+
         //WHEN check ParkingSpot Id=1 status
         boolean expectedValue = parkingSpot.isAvailable();
+
         //THEN retrieve the correct status for ParkingSpot Id=1
         assertTrue(expectedValue);
     }
@@ -51,10 +53,57 @@ public class ParkingSpotTest {
     public void isNotAvailableParkingSpotTest() {
         //GIVEN a ParkingSpot with Id=1 not available
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+
         //WHEN check ParkingSpot Id=1 status
         boolean expectedValue = parkingSpot.isAvailable();
+
         //THEN retrieve the correct status for ParkingSpot Id=1
         assertFalse(expectedValue);
     }
 
+    @Test
+    @DisplayName("Check if objects are equals with same object")
+    public void equalsSameObjectTest() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN retrieve the same ParkingSpot
+        assertTrue(spotA.equals(spotA));
+    }
+
+    @Test
+    @DisplayName("Check if objects are equals with different object with same Id")
+    public void equalsDifferentObjectsWithSameIdTest() {
+        //GIVEN an object ParkingSpot A
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //AND an object ParkingSpot B
+        ParkingSpot spotB = new ParkingSpot(1, ParkingType.BIKE, true);
+
+        //THEN retrieve equal objects ParkingSpot
+        assertTrue(spotA.equals(spotB));
+    }
+
+    @Test
+    @DisplayName("Check if objects are NOT equals with different object with different Id")
+    public void notEqualsDifferentObjectsWithDifferentIdTest() {
+        //GIVEN an object ParkingSpot A
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //AND an object ParkingSpot B
+        ParkingSpot spotB = new ParkingSpot(2, ParkingType.CAR, true);
+
+        //THEN retrieve not equals objects ParkingSpot
+        assertFalse(spotA.equals(spotB));
+    }
+
+    @Test
+    @DisplayName("Check if objects are NOT equals with different object with different Id")
+    public void NotEqualsWithNullTest() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN retrieve not equals objects
+        assertFalse(spotA.equals(null));
+    }
 }
