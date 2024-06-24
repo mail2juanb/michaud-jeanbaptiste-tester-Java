@@ -59,7 +59,8 @@ public class ParkingService {
     }
 
     public boolean isEligibleToDiscount(Ticket ticket) {
-        return ticketDAO.getNbTicket(ticket) > 0;
+        String vehicleRegNumber = ticket.getVehicleRegNumber();
+        return ticketDAO.getNbTicket(vehicleRegNumber) > 0;
     }
 
     private String getVehichleRegNumber() throws Exception {

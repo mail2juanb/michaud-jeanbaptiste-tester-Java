@@ -70,7 +70,7 @@ public class ParkingServiceTest {
         ticket.setParkingSpot(parkingSpot);
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
         doReturn(true).when(ticketDAO).updateTicket(any(Ticket.class));
-        doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(value).when(ticketDAO).getNbTicket(any(String.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
 
         // WHEN vehicle exiting
@@ -79,7 +79,7 @@ public class ParkingServiceTest {
         // THEN verify that methods updateParkingSpot, updateTicket and getNbTicket called one time
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
         verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
-        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(String.class));
     }
 
     @ParameterizedTest(name = "{index} => {1}")
@@ -91,7 +91,7 @@ public class ParkingServiceTest {
         doReturn((parkingType == ParkingType.CAR) ? 1 : (parkingType == ParkingType.BIKE) ? 2 : 0).when(inputReaderUtil).readSelection();
         doReturn(1).when(parkingSpotDAO).getNextAvailableSlot(any(ParkingType.class));
         ticket.setParkingSpot(parkingSpot);
-        doReturn(value).when(ticketDAO).getNbTicket(any(Ticket.class));
+        doReturn(value).when(ticketDAO).getNbTicket(any(String.class));
         doReturn(true).when(parkingSpotDAO).updateParking(any(ParkingSpot.class));
 
         // WHEN vehicle incoming
@@ -100,7 +100,7 @@ public class ParkingServiceTest {
         // THEN check that methods updateParkingSpot, saveTicket and getNbTicket called one time
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
         verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
-        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(Ticket.class));
+        verify(ticketDAO, Mockito.times(1)).getNbTicket(any(String.class));
     }
 
     @ParameterizedTest
@@ -123,7 +123,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void getNextParkingNumberIfAvailable()  throws Exception {
+    public void getNextParkingNumberIfAvailable() {
         // GIVEN a car want an available place in car's park
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
         ticket.setParkingSpot(parkingSpot);
