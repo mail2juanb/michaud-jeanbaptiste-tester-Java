@@ -19,7 +19,7 @@ public class TicketTest {
         Ticket ticket = new Ticket();
         ticket.setId(expectedId);
 
-        //WHEN call getId
+        //WHEN retrieve Id
         int currentId = ticket.getId();
 
         //THEN return the expected ticket Id
@@ -34,7 +34,7 @@ public class TicketTest {
         Ticket ticket = new Ticket();
         ticket.setParkingSpot(expectedParkingSpot);
 
-        //WHEN call getParkingSpot
+        //WHEN retrieve ParkingSpot
         ParkingSpot currentParkingSpot = ticket.getParkingSpot();
 
         //THEN return the expected ParkingSpot
@@ -49,11 +49,24 @@ public class TicketTest {
         Ticket ticket = new Ticket();
         ticket.setVehicleRegNumber(expectedVehicleRegNumber);
 
-        //WHEN call getVehicleRegNumber
+        //WHEN retrieve getVehicleRegNumber
         String currentVehicleRegNumber = ticket.getVehicleRegNumber();
 
         //THEN return the expected VehicleRegNumber
         assertEquals(expectedVehicleRegNumber, currentVehicleRegNumber);
+    }
+
+    @Test
+    @DisplayName("The price is correctly defined and retrieved.")
+    public void getPriceTest() {
+        //GIVEN a Price
+        double expectedPrice = 15.75;
+        Ticket ticket = new Ticket();
+        ticket.setPrice(expectedPrice);
+        //WHEN retrieve Price
+        double currentPrice = ticket.getPrice();
+        //THEN return the expected Price
+        assertEquals(expectedPrice, currentPrice, 0);
     }
 
 }
