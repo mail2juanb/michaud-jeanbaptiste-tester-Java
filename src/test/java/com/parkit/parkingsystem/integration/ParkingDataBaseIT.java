@@ -1,12 +1,14 @@
 package com.parkit.parkingsystem.integration;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Date;
 
 import static junit.framework.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,16 +78,18 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExit(){
-        System.out.println("  "); // just nice
+        // GIVEN a car with registration number ABCDEF parked since 1 hour
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 
-        // GIVEN a car with registration number ABCDEF parked
-        testParkingACar();
-
-        // Wait little time to go to exit : wait 1sec
-        waitWhile(1000); // wait 1sec
+        Ticket currentTicket = new Ticket();
+        currentTicket.setParkingSpot(parkingSpot);
+        currentTicket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
+        long enteringDate = new Date().getTime() - (3600 * 1000); // Current date/time minus 1 hour
+        currentTicket.setInTime(new Date(enteringDate));
+        ticketDAO.saveTicket(currentTicket);
 
         // WHEN car exiting parking
-        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
 
         // THEN fare generated and out time are populated correctly in the database
@@ -94,49 +100,38 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExitRecurringUser() {
-        // GIVEN a car with registration number ABCDEF parked
-        testParkingACar();
-
-        // AND exited once
-        waitWhile(1000); // wait 1sec
-
+        // GIVEN a car with registration number ABCDEF parked with an existing ticket
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+
+        Ticket oldTicket = new Ticket();
+        oldTicket.setParkingSpot(parkingSpot);
+        oldTicket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
+        oldTicket.setInTime(new Date(100000)); // Thursday, January 1st 1970 - 01:01:40
+        oldTicket.setOutTime(new Date(250000)); // Thursday, January 1st 1970 - 01:04:40
+        oldTicket.setPrice(4.25);
+        ticketDAO.saveTicket(oldTicket);
+
+        // AND the same vehicule entering, this user become recurring user
+        long enteringDate = new Date().getTime() - (3600 * 1000); // Current date/time minus 1 hour
+
+        Ticket newEnteringTicket = new Ticket();
+        newEnteringTicket.setParkingSpot(parkingSpot);
+        newEnteringTicket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
+        newEnteringTicket.setInTime(new Date(enteringDate));
+        ticketDAO.saveTicket(newEnteringTicket);
+
+        // AND the expected price with discount
+        double expectedPriceWithDiscount = FareCalculatorService.truncatePrice((1 * Fare.CAR_RATE_PER_HOUR) * 0.95);
+
+        // WHEN recurring user exit parking again
         parkingService.processExitingVehicle();
 
-        // Wait for a while before re-entering
-        waitWhile(1000); // wait 1sec
-
-        // WHEN the same car comes in park again
-        parkingService.processIncomingVehicle();
-        waitWhile(1000); // wait 1sec
-
-        // AND exits parking again
-        parkingService.processExitingVehicle();
-
-        // THEN fare should include a 5% discount and outTime is populated correctly in the database
+        // THEN a discount is trigger
         Ticket ticket = ticketDAO.getTicket(VEHICLE_REG_NUMBER);
         assertNotNull(ticket.getOutTime());
-
-        long inHour = ticket.getInTime().getTime();
-        long outHour = ticket.getOutTime().getTime();
-
-        double durationInHour = (outHour - inHour) / (1000.*3600);
-
-        double originalPrice = durationInHour * Fare.CAR_RATE_PER_HOUR;
-        double expectedPriceWithDiscount = originalPrice * 0.95;
-
-        if (durationInHour < 0.5) {  // Free park when duration < 1/2 hour
-            expectedPriceWithDiscount = 0;
-        }
 
         assertEquals(expectedPriceWithDiscount, ticket.getPrice());
     }
 
-    private void waitWhile(int timeInMilliSeconds) {
-        try {
-            Thread.sleep(timeInMilliSeconds);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
