@@ -88,4 +88,19 @@ public class TicketTest {
         assertEquals(expectedInTime, currentInTime);
     }
 
+    @Test
+    @DisplayName("OutTime is correctly defined and retrieved.")
+    public void getOutTimeTest() {
+        //GIVEN an OutTime
+        Date expectedOutTime = new Date();
+        Ticket ticket = new Ticket();
+        ticket.setOutTime(expectedOutTime);
+
+        //WHEN retrieve the OutTime
+        Date currentOutTime = ticket.getOutTime();
+
+        //THEN return the expected OutTime
+        assertEquals(expectedOutTime, currentOutTime);
+    }
+
 }
