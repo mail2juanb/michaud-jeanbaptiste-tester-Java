@@ -3,6 +3,7 @@ package com.parkit.parkingsystem;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +14,18 @@ import static junit.framework.Assert.assertSame;
 
 public class TicketTest {
 
+    private Ticket ticket;
+
+    @BeforeEach
+    public void setUpPerTest() {
+        ticket = new Ticket();
+    }
+
     @Test
     @DisplayName("The ID value is correctly defined and retrieved.")
     public void getIdTicketTest() {
         //GIVEN a ticket Id
         int expectedId = 123;
-        Ticket ticket = new Ticket();
         ticket.setId(expectedId);
 
         //WHEN retrieve Id
@@ -33,7 +40,6 @@ public class TicketTest {
     public void getParkingSpotTicketTest() {
         //GIVEN a ParkingSpot
         ParkingSpot expectedParkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
-        Ticket ticket = new Ticket();
         ticket.setParkingSpot(expectedParkingSpot);
 
         //WHEN retrieve ParkingSpot
@@ -48,7 +54,6 @@ public class TicketTest {
     public void getVehicleRegNumberTicketTest() {
         //GIVEN a VehicleRegNumber
         String expectedVehicleRegNumber = "ABC123";
-        Ticket ticket = new Ticket();
         ticket.setVehicleRegNumber(expectedVehicleRegNumber);
 
         //WHEN retrieve getVehicleRegNumber
@@ -63,7 +68,6 @@ public class TicketTest {
     public void getPriceTicketTest() {
         //GIVEN a Price
         double expectedPrice = 15.75;
-        Ticket ticket = new Ticket();
         ticket.setPrice(expectedPrice);
 
         //WHEN retrieve Price
@@ -78,7 +82,6 @@ public class TicketTest {
     public void getInTimeTicketTest() {
         //GIVEN an InTime
         Date expectedInTime = new Date();
-        Ticket ticket = new Ticket();
         ticket.setInTime(expectedInTime);
 
         //WHEN retrieve the InTime
@@ -93,7 +96,6 @@ public class TicketTest {
     public void getOutTimeTicketTest() {
         //GIVEN an OutTime
         Date expectedOutTime = new Date();
-        Ticket ticket = new Ticket();
         ticket.setOutTime(expectedOutTime);
 
         //WHEN retrieve the OutTime
