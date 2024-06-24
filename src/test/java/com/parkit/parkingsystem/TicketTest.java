@@ -29,7 +29,7 @@ public class TicketTest {
     @Test
     @DisplayName("The ParkingSpot is correctly defined and retrieved.")
     public void getParkingSpotTest() {
-        //GIVEN a parking spot defined
+        //GIVEN a ParkingSpot
         ParkingSpot expectedParkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
         ticket.setParkingSpot(expectedParkingSpot);
@@ -39,6 +39,21 @@ public class TicketTest {
 
         //THEN return the expected ParkingSpot
         assertSame(expectedParkingSpot, currentParkingSpot);
+    }
+
+    @Test
+    @DisplayName("The VehicleRegNumber is correctly defined and retrieved.")
+    public void getVehicleRegNumberTest() {
+        //GIVEN a VehicleRegNumber
+        String expectedVehicleRegNumber = "ABC123";
+        Ticket ticket = new Ticket();
+        ticket.setVehicleRegNumber(expectedVehicleRegNumber);
+
+        //WHEN call getVehicleRegNumber
+        String currentVehicleRegNumber = ticket.getVehicleRegNumber();
+
+        //THEN return the expected VehicleRegNumber
+        assertEquals(expectedVehicleRegNumber, currentVehicleRegNumber);
     }
 
 }
