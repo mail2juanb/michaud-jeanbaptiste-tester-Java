@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static junit.framework.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ParkingSpotTest {
 
@@ -68,7 +69,7 @@ public class ParkingSpotTest {
         ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
 
         //THEN retrieve the same ParkingSpot
-        assertTrue(spotA.equals(spotA));
+        assertEquals(spotA, spotA);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ParkingSpotTest {
         ParkingSpot spotB = new ParkingSpot(1, ParkingType.BIKE, true);
 
         //THEN retrieve equal objects ParkingSpot
-        assertTrue(spotA.equals(spotB));
+        assertEquals(spotA, spotB);
     }
 
     @Test
@@ -105,5 +106,27 @@ public class ParkingSpotTest {
 
         //THEN retrieve not equals objects
         assertFalse(spotA.equals(null));
+    }
+
+    @Test
+    @DisplayName("Check if objects are equals with same object with same Id")
+    public void hashCodeConsistencyWithSameObjectWithSameIdTest() {
+        //GIVEN 2 ParkingSpot with same Ids
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+        ParkingSpot spotB = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN return not equals objects
+        assertEquals(spotA.hashCode(), spotB.hashCode());
+    }
+
+    @Test
+    @DisplayName("Check if objects are NOT equals with same object with different Id")
+    public void hashCodeConsistencyWithSameObjectWithDifferentIdTest() {
+        //GIVEN 2 ParkingSpot with same Ids
+        ParkingSpot spotA = new ParkingSpot(1, ParkingType.CAR, true);
+        ParkingSpot spotB = new ParkingSpot(2, ParkingType.CAR, true);
+
+        //THEN return not equals objects
+        assertNotEquals(spotA.hashCode(), spotB.hashCode());
     }
 }
