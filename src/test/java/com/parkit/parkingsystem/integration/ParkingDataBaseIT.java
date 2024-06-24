@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static junit.framework.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -29,6 +29,7 @@ public class ParkingDataBaseIT {
     private static ParkingSpotDAO parkingSpotDAO;
     private static TicketDAO ticketDAO;
     private static DataBasePrepareService dataBasePrepareService;
+    public static final String VEHICLE_REG_NUMBER = "ABCDEF";
 
     @Mock
     private static InputReaderUtil inputReaderUtil;
@@ -44,8 +45,8 @@ public class ParkingDataBaseIT {
 
     @BeforeEach
     public void setUpPerTest() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        lenient().when(inputReaderUtil.readSelection()).thenReturn(1);
+        lenient().when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(VEHICLE_REG_NUMBER);
         dataBasePrepareService.clearDataBaseEntries();
     }
 
@@ -63,10 +64,10 @@ public class ParkingDataBaseIT {
         parkingService.processIncomingVehicle();
 
         // THEN a ticket is actualy saved in DB and Parking table is updated with availability
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        Ticket ticket = ticketDAO.getTicket(VEHICLE_REG_NUMBER);
         ParkingSpot parkingSpot = ticket.getParkingSpot();
 
-        assertEquals("ABCDEF", ticket.getVehicleRegNumber());
+        assertEquals(VEHICLE_REG_NUMBER, ticket.getVehicleRegNumber());
         assertFalse(parkingSpot.isAvailable());
         assertNotEquals(parkingSpot.getId(), parkingSpotDAO.getNextAvailableSlot(parkingSpot.getParkingType()));
     }
@@ -86,7 +87,7 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
 
         // THEN fare generated and out time are populated correctly in the database
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        Ticket ticket = ticketDAO.getTicket(VEHICLE_REG_NUMBER);
         assertNotNull(ticket.getOutTime());
         assertTrue(ticket.getPrice() >= 0);
     }
@@ -113,7 +114,7 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
 
         // THEN fare should include a 5% discount and outTime is populated correctly in the database
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        Ticket ticket = ticketDAO.getTicket(VEHICLE_REG_NUMBER);
         assertNotNull(ticket.getOutTime());
 
         long inHour = ticket.getInTime().getTime();
