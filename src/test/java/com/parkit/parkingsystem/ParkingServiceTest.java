@@ -105,13 +105,9 @@ public class ParkingServiceTest {
 
     @ParameterizedTest
     @EnumSource(ParkingType.class)
-    public void processExitingVehicleUnableUpdate(ParkingType parkingType) {
+    public void processExitingVehicleUnableUpdate(ParkingType parkingType) throws Exception {
         // GIVEN a vehicle parked but update ticket fail
-        try {
-            doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        doReturn(VEHICLE_REG_NUMBER).when(inputReaderUtil).readVehicleRegistrationNumber();
         ParkingSpot parkingSpot = new ParkingSpot(1, parkingType,false);
         ticket.setParkingSpot(parkingSpot);
         doReturn(ticket).when(ticketDAO).getTicket(anyString());
