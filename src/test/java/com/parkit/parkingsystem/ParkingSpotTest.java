@@ -5,7 +5,7 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 
 public class ParkingSpotTest {
 
@@ -33,6 +33,28 @@ public class ParkingSpotTest {
 
         //THEN retrieve the correct ParkingType
         assertEquals(expectedParkingType, parkingSpot.getParkingType());
+    }
+
+    @Test
+    @DisplayName("The parkingSpot is available and return true.")
+    public void isAvailableParkingSpotTest() {
+        //GIVEN a ParkingSpot with Id=1 available
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+        //WHEN check ParkingSpot Id=1 status
+        boolean expectedValue = parkingSpot.isAvailable();
+        //THEN retrieve the correct status for ParkingSpot Id=1
+        assertTrue(expectedValue);
+    }
+
+    @Test
+    @DisplayName("The parkingSpot is NOT available and return false.")
+    public void isNotAvailableParkingSpotTest() {
+        //GIVEN a ParkingSpot with Id=1 not available
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        //WHEN check ParkingSpot Id=1 status
+        boolean expectedValue = parkingSpot.isAvailable();
+        //THEN retrieve the correct status for ParkingSpot Id=1
+        assertFalse(expectedValue);
     }
 
 }
