@@ -15,7 +15,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("The ID value is correctly defined and retrieved.")
-    public void getIdTest() {
+    public void getIdTicketTest() {
         //GIVEN a ticket Id
         int expectedId = 123;
         Ticket ticket = new Ticket();
@@ -30,7 +30,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("The ParkingSpot is correctly defined and retrieved.")
-    public void getParkingSpotTest() {
+    public void getParkingSpotTicketTest() {
         //GIVEN a ParkingSpot
         ParkingSpot expectedParkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -45,7 +45,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("The VehicleRegNumber is correctly defined and retrieved.")
-    public void getVehicleRegNumberTest() {
+    public void getVehicleRegNumberTicketTest() {
         //GIVEN a VehicleRegNumber
         String expectedVehicleRegNumber = "ABC123";
         Ticket ticket = new Ticket();
@@ -60,7 +60,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("The price is correctly defined and retrieved.")
-    public void getPriceTest() {
+    public void getPriceTicketTest() {
         //GIVEN a Price
         double expectedPrice = 15.75;
         Ticket ticket = new Ticket();
@@ -75,7 +75,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("InTime is correctly defined and retrieved.")
-    public void getInTimeTest() {
+    public void getInTimeTicketTest() {
         //GIVEN an InTime
         Date expectedInTime = new Date();
         Ticket ticket = new Ticket();
@@ -90,7 +90,7 @@ public class TicketTest {
 
     @Test
     @DisplayName("OutTime is correctly defined and retrieved.")
-    public void getOutTimeTest() {
+    public void getOutTimeTicketTest() {
         //GIVEN an OutTime
         Date expectedOutTime = new Date();
         Ticket ticket = new Ticket();
