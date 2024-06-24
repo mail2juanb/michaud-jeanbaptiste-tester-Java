@@ -22,4 +22,17 @@ public class ParkingSpotTest {
         assertEquals(expectedIdParkingSpot, parkingSpot.getId());
     }
 
+    @Test
+    @DisplayName("The ParkingType is correctly defined and retrieved.")
+    public void getParkingTypeParkingSpotTest() {
+        //GIVEN a ParkingType CAR
+        ParkingType expectedParkingType = ParkingType.CAR;
+
+        //WHEN define ParkingSpot
+        ParkingSpot parkingSpot = new ParkingSpot(1, expectedParkingType, true);
+
+        //THEN retrieve the correct ParkingType
+        assertEquals(expectedParkingType, parkingSpot.getParkingType());
+    }
+
 }
