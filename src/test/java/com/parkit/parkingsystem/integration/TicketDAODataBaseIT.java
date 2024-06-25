@@ -116,8 +116,8 @@ public class TicketDAODataBaseIT {
         Ticket ticketB = new Ticket();
         ticketB.setParkingSpot(parkingSpotB);
         ticketB.setVehicleRegNumber(VEHICLE_REG_NUMBER);
-        ticketB.setInTime(new Date(4450000)); // Thursday, January 1st 1970 - 01:01:40
-        ticketB.setOutTime(new Date(6660000)); // Thursday, January 1st 1970 - 01:04:40
+        ticketB.setInTime(new Date(4450000)); // Thursday, January 1st 1970 - 02:14:10
+        ticketB.setOutTime(new Date(6660000)); // Thursday, January 1st 1970 - 02:51:00
         ticketB.setPrice(4.25);
         ticketDAO.saveTicket(ticketB);
 
