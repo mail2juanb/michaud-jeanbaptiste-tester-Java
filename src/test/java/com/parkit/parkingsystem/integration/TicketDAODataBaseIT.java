@@ -53,7 +53,7 @@ public class TicketDAODataBaseIT {
     }
 
     @Test
-    public void getTicket() {
+    public void getTicketTest() {
         //GIVEN a ticket in test database
         ParkingSpot expectedParkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
         ticket.setParkingSpot(expectedParkingSpot);
