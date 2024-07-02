@@ -178,4 +178,28 @@ public class ParkingSpotTest {
         assertFalse(spot1.equals(null));
     }
 
+    @Test
+    @DisplayName("Check that different objects not equals")
+    public void equalsDifferentObject() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //AND an object
+        Object obj = new Object();
+
+        //THEN objects not same
+        assertFalse(spot1.equals(obj));
+    }
+
+    @Test
+    @DisplayName("Check that different objects with same attributes are equals")
+    public void equalsDifferentObjectWithSameAttributes() {
+        //GIVEN 2 objects ParkingSpot
+        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
+        ParkingSpot spot2 = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN objects not same
+        assertTrue(spot1.equals(spot2));
+    }
+
 }
