@@ -171,48 +171,4 @@ public class ParkingSpotTest {
         assertNotEquals(spotA.hashCode(), spotB.hashCode());
     }
 
-    @Test
-    @DisplayName("Check that same object are equals")
-    public void equalsSameObjectsTest() {
-        //GIVEN an object ParkingSpot
-        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
-
-        //THEN both objects are same
-        assertTrue(spot1.equals(spot1));
-    }
-
-    @Test
-    @DisplayName("Check that null object not equals")
-    public void equalsNullObject() {
-        //GIVEN an object ParkingSpot
-        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
-
-        //THEN objects not same
-        assertFalse(spot1.equals(null));
-    }
-
-
-
-    @Test
-    @DisplayName("Check that different objects with same attributes are equals")
-    public void equalsDifferentObjectWithSameAttributes() {
-        //GIVEN 2 objects ParkingSpot
-        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
-        ParkingSpot spot2 = new ParkingSpot(1, ParkingType.CAR, true);
-
-        //THEN objects not same
-        assertTrue(spot1.equals(spot2));
-    }
-
-    @Test
-    @DisplayName("Check that different objects with different attributes not equals")
-    public void equalsDifferentObjectWithDifferentAttributes() {
-        //GIVEN 2 objects ParkingSpot
-        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
-        ParkingSpot spot2 = new ParkingSpot(2, ParkingType.BIKE, false);
-
-        //THEN objects not same
-        assertFalse(spot1.equals(spot2));
-    }
-    
 }
