@@ -102,7 +102,7 @@ public class ParkingSpotTest {
 
     @Test
     @DisplayName("Check that different objects not equals")
-    public void notEqualsDifferentObject() {
+    public void notEqualsDifferentObjectTest() {
         //GIVEN an object ParkingSpot
         ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
 
