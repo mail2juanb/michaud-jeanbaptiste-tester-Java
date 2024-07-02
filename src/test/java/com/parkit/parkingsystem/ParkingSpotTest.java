@@ -4,6 +4,8 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static junit.framework.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -49,7 +51,18 @@ public class ParkingSpotTest {
         assertEquals(expectedParkingType, parkingSpot.getParkingType());
     }
 
+    @ParameterizedTest
+    @EnumSource(ParkingType.class)
+    @DisplayName("The ParkingType is correctly defined.")
+    public void setParkingTypeParkingSpotTest(ParkingType expectedParkingType) {
+        //GIVEN a ParkingType CAR or BIKE - See Enum
 
+        //WHEN set a new ParkingType
+        ParkingSpot parkingSpot = new ParkingSpot(1, expectedParkingType, true);
+
+        //THEN retrieve the correct ParkingType
+        assertEquals(expectedParkingType, parkingSpot.getParkingType());
+    }
 
     @Test
     @DisplayName("The parkingSpot is available and return true.")
