@@ -38,11 +38,11 @@ public class ParkingSpotTest {
         assertEquals(2, parkingSpot.getId());
     }
 
-    @Test
+    @ParameterizedTest
+    @EnumSource(ParkingType.class)
     @DisplayName("The ParkingType is correctly retrieved.")
-    public void getParkingTypeParkingSpotTest() {
-        //GIVEN a ParkingType CAR
-        ParkingType expectedParkingType = ParkingType.CAR;
+    public void getParkingTypeParkingSpotTest(ParkingType expectedParkingType) {
+        //GIVEN a ParkingType CAR or BIKE - See Enum
 
         //WHEN define ParkingSpot
         ParkingSpot parkingSpot = new ParkingSpot(1, expectedParkingType, true);
