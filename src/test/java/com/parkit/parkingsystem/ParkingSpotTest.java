@@ -24,6 +24,19 @@ public class ParkingSpotTest {
     }
 
     @Test
+    @DisplayName("The Id value is correctly defined.")
+    public void setIdTicketTest() {
+        //GIVEN a ParkingSpot
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //WHEN set a new Id
+        parkingSpot.setId(2);
+
+        //THEN
+        assertEquals(2, parkingSpot.getId());
+    }
+
+    @Test
     @DisplayName("The ParkingType is correctly defined and retrieved.")
     public void getParkingTypeParkingSpotTest() {
         //GIVEN a ParkingType CAR
