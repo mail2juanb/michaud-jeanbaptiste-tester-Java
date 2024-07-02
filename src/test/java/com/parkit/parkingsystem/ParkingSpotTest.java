@@ -51,17 +51,17 @@ public class ParkingSpotTest {
         assertEquals(expectedParkingType, parkingSpot.getParkingType());
     }
 
-    @ParameterizedTest
-    @EnumSource(ParkingType.class)
+    @Test
     @DisplayName("The ParkingType is correctly defined.")
-    public void setParkingTypeParkingSpotTest(ParkingType expectedParkingType) {
-        //GIVEN a ParkingType CAR or BIKE - See Enum
+    public void setParkingTypeParkingSpotTest() {
+        //GIVEN a ParkingType CAR
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 
         //WHEN set a new ParkingType
-        ParkingSpot parkingSpot = new ParkingSpot(1, expectedParkingType, true);
+        parkingSpot.setParkingType(ParkingType.BIKE);
 
         //THEN retrieve the correct ParkingType
-        assertEquals(expectedParkingType, parkingSpot.getParkingType());
+        assertEquals(ParkingType.BIKE, parkingSpot.getParkingType());
     }
 
     @Test
