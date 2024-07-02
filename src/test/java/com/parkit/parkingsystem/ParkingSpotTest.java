@@ -157,4 +157,15 @@ public class ParkingSpotTest {
         //THEN return not equals objects
         assertNotEquals(spotA.hashCode(), spotB.hashCode());
     }
+
+    @Test
+    @DisplayName("Check that same object are equals")
+    public void equalsSameObjectsTest() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN both objects are same
+        assertTrue(spot1.equals(spot1));
+    }
+
 }
