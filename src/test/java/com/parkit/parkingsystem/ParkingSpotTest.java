@@ -168,4 +168,14 @@ public class ParkingSpotTest {
         assertTrue(spot1.equals(spot1));
     }
 
+    @Test
+    @DisplayName("Check that null object not equals")
+    public void equalsNullObject() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //THEN objects not same
+        assertFalse(spot1.equals(null));
+    }
+
 }
