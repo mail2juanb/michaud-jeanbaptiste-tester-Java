@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class ParkingSpotTest {
 
     @Test
-    @DisplayName("The Id value is correctly defined and retrieved.")
+    @DisplayName("The Id value is correctly retrieved.")
     public void getIdParkingSpotTest() {
         //GIVEN an Id of ParkingSpot
         int expectedIdParkingSpot = 1;
@@ -37,7 +37,7 @@ public class ParkingSpotTest {
     }
 
     @Test
-    @DisplayName("The ParkingType is correctly defined and retrieved.")
+    @DisplayName("The ParkingType is correctly retrieved.")
     public void getParkingTypeParkingSpotTest() {
         //GIVEN a ParkingType CAR
         ParkingType expectedParkingType = ParkingType.CAR;
@@ -48,6 +48,8 @@ public class ParkingSpotTest {
         //THEN retrieve the correct ParkingType
         assertEquals(expectedParkingType, parkingSpot.getParkingType());
     }
+
+
 
     @Test
     @DisplayName("The parkingSpot is available and return true.")
