@@ -101,6 +101,19 @@ public class ParkingSpotTest {
     }
 
     @Test
+    @DisplayName("Check that different objects not equals")
+    public void notEqualsDifferentObject() {
+        //GIVEN an object ParkingSpot
+        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
+
+        //AND an object
+        Object obj = new Object();
+
+        //THEN objects not same
+        assertFalse(spot1.equals(obj));
+    }
+
+    @Test
     @DisplayName("Check if objects are equals with different object with same Id")
     public void equalsDifferentObjectsWithSameIdTest() {
         //GIVEN an object ParkingSpot A
@@ -178,18 +191,7 @@ public class ParkingSpotTest {
         assertFalse(spot1.equals(null));
     }
 
-    @Test
-    @DisplayName("Check that different objects not equals")
-    public void equalsDifferentObject() {
-        //GIVEN an object ParkingSpot
-        ParkingSpot spot1 = new ParkingSpot(1, ParkingType.CAR, true);
 
-        //AND an object
-        Object obj = new Object();
-
-        //THEN objects not same
-        assertFalse(spot1.equals(obj));
-    }
 
     @Test
     @DisplayName("Check that different objects with same attributes are equals")
@@ -212,5 +214,5 @@ public class ParkingSpotTest {
         //THEN objects not same
         assertFalse(spot1.equals(spot2));
     }
-
+    
 }
