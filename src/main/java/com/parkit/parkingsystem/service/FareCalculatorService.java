@@ -58,10 +58,10 @@ public class FareCalculatorService {
     }
 
     private static double parkingTime(Ticket ticket) {
-        long inHour = ticket.getInTime().getTime();
-        long outHour = ticket.getOutTime().getTime();
+        long inTimeMs = ticket.getInTime().getTime();
+        long outTimeMs = ticket.getOutTime().getTime();
 
-        return (outHour - inHour) / (1000.*3600);
+        return (outTimeMs - inTimeMs) / (1000.*3600);
     }
 
     private static boolean isEligibleToFree(double duration) {
